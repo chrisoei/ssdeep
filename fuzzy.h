@@ -56,7 +56,7 @@ extern "C" {
 /// must be allocated to hold at least FUZZY_MAX_RESULT bytes.
 /// @return Returns zero on success, non-zero on error.
 extern int fuzzy_hash_buf(const unsigned char *buf,
-			  uint32_t      buf_len,
+			  uint64_t      buf_len,
 			  char          *result);
 
 

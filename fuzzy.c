@@ -59,7 +59,7 @@ off_t find_file_size(FILE *h);
 static struct {
   unsigned char window[ROLLING_WINDOW];
   uint32_t h1, h2, h3;
-  uint32_t n;
+  uint64_t n;
 } roll_state;
 
 
@@ -114,10 +114,10 @@ typedef struct _ss_context {
   char *ret, *p;
   // This is the file size, which should be uint64_t, but we
   // generally do not process files that large here.
-  uint32_t total_chars;
+  uint64_t total_chars;
   uint32_t h, h2, h3;
-  uint32_t j, n, i, k;
-  uint32_t block_size;
+  uint64_t j, n, i, k;
+  uint64_t block_size;
   char ret2[SPAMSUM_LENGTH/2 + 1];
 } ss_context;
 
@@ -153,9 +153,9 @@ static const char *b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01
 
 static void ss_engine(ss_context *ctx, 
 		      const unsigned char *buffer, 
-		      uint32_t buffer_size)
+		      uint64_t buffer_size)
 {
-  uint32_t i;
+  uint64_t i;
 
   if (NULL == ctx || NULL == buffer)
     return;
@@ -210,7 +210,7 @@ static void ss_engine(ss_context *ctx,
 
 static int ss_update(ss_context *ctx, FILE *handle)
 {
-  uint32_t bytes_read;
+  uint64_t bytes_read;
   unsigned char *buffer; 
 
   if (NULL == ctx || NULL == handle)
@@ -220,7 +220,7 @@ static int ss_update(ss_context *ctx, FILE *handle)
   if (buffer == NULL)
     return TRUE;
 
-  snprintf(ctx->ret, 12, "%u:", ctx->block_size);
+  snprintf(ctx->ret, 12, "%lu:", ctx->block_size);
   ctx->p = ctx->ret + strlen(ctx->ret);
   
   memset(ctx->p, 0, SPAMSUM_LENGTH+1);
@@ -314,7 +314,7 @@ extern int fuzzy_hash_filename(const char * filename,
 
 
 int fuzzy_hash_buf(const unsigned char *buf,
-		   uint32_t      buf_len,
+		   uint64_t      buf_len,
 		   char          *result)
 {
   ss_context *ctx;
